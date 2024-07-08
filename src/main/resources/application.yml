@@ -1,0 +1,38 @@
+spring:
+  batch:
+    jdbc:
+      initialize-schema: never
+
+  datasource:
+    member:
+      jdbc-url: jdbc:postgresql://localhost:5432/member
+      username: root
+      password: 1234
+      driver-class-name: org.postgresql.Driver
+
+    content:
+      jdbc-url: jdbc:postgresql://localhost:5432/content
+      username: root
+      password: 1234
+      driver-class-name: org.postgresql.Driver
+
+    social:
+      jdbc-url: jdbc:postgresql://localhost:5432/social_graph_db
+      username: root
+      password: 1234
+      driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+
+    member:
+      packages-to-scan: com.pulse.batch.entity.member
+    content:
+      packages-to-scan: com.pulse.batch.entity.content
+    social_graph:
+      packages-to-scan: com.pulse.batch.entity.social_graph
