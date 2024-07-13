@@ -3,6 +3,11 @@ server:
   port: 8090
 
 spring:
+  # 배치 설정
+  batch:
+    job:
+      enabled: false
+
   datasource:
     # 배치 데이터베이스 설정
     batch:
