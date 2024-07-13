@@ -1,4 +1,4 @@
-package com.pulse.batch.config.batch;
+package com.pulse.batch.config;
 
 import org.springframework.batch.core.configuration.support.DefaultBatchConfiguration;
 import org.springframework.batch.core.repository.JobRepository;
@@ -12,22 +12,26 @@ import org.springframework.transaction.PlatformTransactionManager;
 import javax.sql.DataSource;
 import java.util.Objects;
 
+/**
+ * Batch 설정을 위한 클래스
+ * 여기서 Batch의 기본 6개 테이블이 설정된 batch 데이터소스와 트랜잭션 매니저를 설정한다.
+ */
 @Configuration
-public class BatchConfigurer extends DefaultBatchConfiguration {
+public class BatchDefaultConfig extends DefaultBatchConfiguration {
 
-    private final DataSource memberDataSource;
-    private final PlatformTransactionManager memberTransactionManager;
+    private final DataSource batchDataSource;
+    private final PlatformTransactionManager batchTransactionManager;
 
-    public BatchConfigurer(@Qualifier("memberDataSource") DataSource memberDataSource,
-                           @Qualifier("memberTransactionManager") PlatformTransactionManager memberTransactionManager) {
-        this.memberDataSource = memberDataSource;
-        this.memberTransactionManager = memberTransactionManager;
+    public BatchDefaultConfig(@Qualifier("batchDataSource") DataSource batchDataSource,
+                              @Qualifier("batchTransactionManager") PlatformTransactionManager batchTransactionManager) {
+        this.batchDataSource = batchDataSource;
+        this.batchTransactionManager = batchTransactionManager;
     }
 
     @Override
     @NonNull
     protected DataSource getDataSource() {
-        return memberDataSource;
+        return batchDataSource;
     }
 
     @Override
@@ -35,8 +39,8 @@ public class BatchConfigurer extends DefaultBatchConfiguration {
     @NonNull
     public JobRepository jobRepository() {
         JobRepositoryFactoryBean factory = new JobRepositoryFactoryBean();
-        factory.setDataSource(memberDataSource);
-        factory.setTransactionManager(memberTransactionManager);
+        factory.setDataSource(batchDataSource);
+        factory.setTransactionManager(batchTransactionManager);
         factory.setIsolationLevelForCreate("ISOLATION_READ_COMMITTED");
         factory.setTablePrefix("BATCH_");
         try {
@@ -50,7 +54,7 @@ public class BatchConfigurer extends DefaultBatchConfiguration {
     @Bean
     @NonNull
     public PlatformTransactionManager transactionManager() {
-        return memberTransactionManager;
+        return batchTransactionManager;
     }
 
 }

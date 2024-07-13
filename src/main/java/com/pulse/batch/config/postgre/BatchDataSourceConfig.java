@@ -7,6 +7,7 @@ import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -20,40 +21,45 @@ import java.util.Map;
 @Configuration
 @EnableTransactionManagement
 @EnableJpaRepositories(
-        basePackages = "com.pulse.batch.repository.content",
-        entityManagerFactoryRef = "contentEntityManagerFactory",
-        transactionManagerRef = "contentTransactionManager"
+        basePackages = "com.pulse.batch.repository.batch",
+        entityManagerFactoryRef = "batchEntityManagerFactory",
+        transactionManagerRef = "batchTransactionManager"
 )
-public class ContentDataSourceConfig {
+public class BatchDataSourceConfig {
 
-    @Bean(name = "contentDataSource")
-    @ConfigurationProperties(prefix = "spring.datasource.content")
-    public DataSource contentDataSource() {
+    @Primary
+    @Bean(name = "batchDataSource")
+    @ConfigurationProperties(prefix = "spring.datasource.batch")
+    public DataSource batchDataSource() {
         return DataSourceBuilder.create().build();
     }
 
-    @Bean(name = "contentEntityManagerFactory")
-    public LocalContainerEntityManagerFactoryBean contentEntityManagerFactory(
+
+    @Primary
+    @Bean(name = "batchEntityManagerFactory")
+    public LocalContainerEntityManagerFactoryBean batchEntityManagerFactory(
             EntityManagerFactoryBuilder builder,
-            @Qualifier("contentDataSource") DataSource dataSource
+            @Qualifier("batchDataSource") DataSource dataSource
     ) {
-        Map<String, String> properties = new HashMap<String, String>();
+        Map<String, String> properties = new HashMap<>();
         properties.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
         properties.put("hibernate.hbm2ddl.auto", "none");
 
         return builder
                 .dataSource(dataSource)
-                .packages("com.pulse.batch.entity.content")
-                .persistenceUnit("content")
+                .packages("com.pulse.batch.entity.batch")
+                .persistenceUnit("batch")
                 .properties(properties)
                 .build();
     }
 
-    @Bean(name = "contentTransactionManager")
-    public PlatformTransactionManager contentTransactionManager(
-            @Qualifier("contentEntityManagerFactory") EntityManagerFactory contentEntityManagerFactory
+
+    @Primary
+    @Bean(name = "batchTransactionManager")
+    public PlatformTransactionManager batchTransactionManager(
+            @Qualifier("batchEntityManagerFactory") EntityManagerFactory batchEntityManagerFactory
     ) {
-        return new JpaTransactionManager(contentEntityManagerFactory);
+        return new JpaTransactionManager(batchEntityManagerFactory);
     }
 
 }

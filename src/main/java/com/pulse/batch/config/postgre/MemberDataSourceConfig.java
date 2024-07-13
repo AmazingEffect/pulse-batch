@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 @Configuration
 @EnableTransactionManagement
@@ -28,14 +27,12 @@ import java.util.Objects;
 )
 public class MemberDataSourceConfig {
 
-    @Primary
     @Bean(name = "memberDataSource")
     @ConfigurationProperties(prefix = "spring.datasource.member")
     public DataSource memberDataSource() {
         return DataSourceBuilder.create().build();
     }
 
-    @Primary
     @Bean(name = "memberEntityManagerFactory")
     public LocalContainerEntityManagerFactoryBean memberEntityManagerFactory(
             EntityManagerFactoryBuilder builder,
@@ -43,7 +40,7 @@ public class MemberDataSourceConfig {
     ) {
         Map<String, String> properties = new HashMap<String, String>();
         properties.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
-        properties.put("hibernate.hbm2ddl.auto", "create");
+        properties.put("hibernate.hbm2ddl.auto", "none");
 
         return builder
                 .dataSource(dataSource)
@@ -53,7 +50,6 @@ public class MemberDataSourceConfig {
                 .build();
     }
 
-    @Primary
     @Bean(name = "memberTransactionManager")
     public PlatformTransactionManager memberTransactionManager(
             @Qualifier("memberEntityManagerFactory") EntityManagerFactory memberEntityManagerFactory
