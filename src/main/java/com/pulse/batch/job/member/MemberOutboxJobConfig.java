@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -35,6 +36,16 @@ public class MemberOutboxJobConfig {
                 .build();
     }
 
+
+    /**
+     * JobScope 어노테이션은 주로 Step을 구성하는 데 사용됩니다.
+     *
+     * @param jobRepository      JobRepository
+     * @param transactionManager PlatformTransactionManager
+     * @param memberParam        memberParam
+     * @return Step
+     */
+    @Transactional
     @Bean
     @JobScope
     public Step processMemberOutboxStep(

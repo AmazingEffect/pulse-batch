@@ -4,6 +4,7 @@ import com.pulse.batch.entity.MessageStatus;
 import com.pulse.batch.entity.member.MemberOutbox;
 import com.pulse.batch.repository.member.MemberOutboxRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.context.annotation.Scope;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+@Slf4j
 @RequiredArgsConstructor
 @StepScope
 @Component
@@ -23,6 +25,8 @@ public class MemberOutboxReader implements ItemReader<MemberOutbox> {
 
     @Override
     public MemberOutbox read() throws Exception {
+        log.info("Member ItemReader 동작!");
+
         if (items == null) {
             items = memberOutboxRepository.findByStatus(MessageStatus.FAIL);
             nextItemIndex = 0;
