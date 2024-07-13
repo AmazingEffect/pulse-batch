@@ -1,6 +1,6 @@
 package com.pulse.batch.repository.content;
 
-import com.pulse.batch.entity.MessageStatus;
+import com.pulse.batch.entity.constant.MessageStatus;
 import com.pulse.batch.entity.content.ContentOutbox;
 import org.springframework.data.jpa.repository.JpaRepository;
 
