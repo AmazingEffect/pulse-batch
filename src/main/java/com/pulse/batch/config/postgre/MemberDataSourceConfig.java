@@ -39,7 +39,6 @@ public class MemberDataSourceConfig {
             @Qualifier("memberDataSource") DataSource dataSource
     ) {
         Map<String, String> properties = new HashMap<String, String>();
-        properties.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
         properties.put("hibernate.hbm2ddl.auto", "none");
 
         return builder
