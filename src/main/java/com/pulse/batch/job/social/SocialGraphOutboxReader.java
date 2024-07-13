@@ -1,6 +1,6 @@
 package com.pulse.batch.job.social;
 
-import com.pulse.batch.entity.MessageStatus;
+import com.pulse.batch.entity.constant.MessageStatus;
 import com.pulse.batch.entity.social.SocialGraphOutbox;
 import com.pulse.batch.repository.social.SocialGraphOutboxRepository;
 import lombok.RequiredArgsConstructor;

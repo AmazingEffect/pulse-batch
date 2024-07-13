@@ -1,6 +1,6 @@
 package com.pulse.batch.job.social;
 
-import com.pulse.batch.entity.MessageStatus;
+import com.pulse.batch.entity.constant.MessageStatus;
 import com.pulse.batch.entity.social.SocialGraphOutbox;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.configuration.annotation.StepScope;
@@ -21,8 +21,14 @@ public class SocialGraphOutboxProcessor implements ItemProcessor<SocialGraphOutb
     @Value("#{jobParameters['socialGraphParam']}")
     private String socialGraphParam;
 
+    /**
+     * ItemProcessor는 Item을 단건으로 처리하도록 설계되어 있다.
+     *
+     * @param item : ItemReader로부터 읽어온 데이터를 가지고 있습니다.
+     * @return : 가공된 아이템을 반환합니다.
+     */
     @Override
-    public SocialGraphOutbox process(SocialGraphOutbox item) throws Exception {
+    public SocialGraphOutbox process(SocialGraphOutbox item) {
         log.info("Social ItemProcessor 동작");
 
         // 1. 항목의 상태를 재발행으로 변경
