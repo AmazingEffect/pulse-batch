@@ -1,4 +1,4 @@
-package com.pulse.batch.entity;
+package com.pulse.batch.entity.constant;
 
 public enum MessageStatus {
 
