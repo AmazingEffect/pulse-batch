@@ -1,7 +1,7 @@
 package com.pulse.batch.entity.member;
 
 import com.pulse.batch.entity.BaseEntity;
-import com.pulse.batch.entity.MessageStatus;
+import com.pulse.batch.entity.constant.MessageStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,6 +13,7 @@ import java.util.Objects;
 
 /**
  * 이벤트 발행 및 Kafka 메시지 송/수신을 관리하기 위한 Outbox 엔티티
+ * dataSource 설정 분리를 위해 각 엔티티별로 패키지를 분리하였습니다.
  */
 @Builder
 @AllArgsConstructor
