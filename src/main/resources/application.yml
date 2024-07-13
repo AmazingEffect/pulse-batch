@@ -1,37 +1,56 @@
+# 서버 포트 설정
 server:
   port: 8090
 
 spring:
+  # 배치 설정
+  batch:
+    job:
+      enabled: false
+
   datasource:
+    # 배치 데이터베이스 설정
     batch:
       jdbc-url: jdbc:postgresql://localhost:5432/batch
       username: root
       password: 1234
       driver-class-name: org.postgresql.Driver
 
+    # 회원 데이터베이스 설정
     member:
       jdbc-url: jdbc:postgresql://localhost:5432/member
       username: root
       password: 1234
       driver-class-name: org.postgresql.Driver
 
+    # 컨텐츠 데이터베이스 설정
     content:
       jdbc-url: jdbc:postgresql://localhost:5432/content
       username: root
       password: 1234
       driver-class-name: org.postgresql.Driver
 
+    # 소셜(친구) 그래프 데이터베이스 설정
     social:
       jdbc-url: jdbc:postgresql://localhost:5432/social_graph_db
       username: root
       password: 1234
       driver-class-name: org.postgresql.Driver
 
+  # JPA 설정
   jpa:
     hibernate:
       ddl-auto: none
     show-sql: true
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
+    open-in-view: false
+
+  # 카프카 설정
+  kafka:
+    consumer:
+      bootstrap-servers: localhost:10000,localhost:10001,localhost:10002
+      group-id: social-graph-group
+    producer:
+      bootstrap-servers: localhost:10000,localhost:10001,localhost:10002

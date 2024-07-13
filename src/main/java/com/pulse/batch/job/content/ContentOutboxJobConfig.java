@@ -1,37 +1,30 @@
-package com.pulse.batch.job;
+package com.pulse.batch.job.content;
 
-import com.pulse.batch.entity.MessageStatus;
 import com.pulse.batch.entity.content.ContentOutbox;
-import com.pulse.batch.repository.content.ContentOutboxRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobScope;
-import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
-import org.springframework.batch.item.ItemProcessor;
-import org.springframework.batch.item.ItemReader;
-import org.springframework.batch.item.ItemWriter;
-import org.springframework.batch.item.support.ListItemReader;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
-@RequiredArgsConstructor
-@Configuration
-@EnableBatchProcessing
 @Slf4j
+@RequiredArgsConstructor
+@EnableBatchProcessing
+@Configuration
 public class ContentOutboxJobConfig {
 
-    private final ContentOutboxRepository contentOutboxRepository;
+    private final ContentOutboxReader contentOutboxReader;
+    private final ContentOutboxProcessor contentOutboxProcessor;
+    private final ContentOutboxWriter contentOutboxWriter;
 
     @Bean
     public Job processContentOutboxJob(
@@ -44,6 +37,15 @@ public class ContentOutboxJobConfig {
     }
 
 
+    /**
+     * JobScope 어노테이션은 주로 Step을 구성하는 데 사용됩니다.
+     *
+     * @param jobRepository      JobRepository
+     * @param transactionManager PlatformTransactionManager
+     * @param contentParam       contentParam
+     * @return Step
+     */
+    @Transactional
     @Bean
     @JobScope
     public Step processContentOutboxStep(
@@ -53,39 +55,10 @@ public class ContentOutboxJobConfig {
     ) {
         return new StepBuilder("processContentOutboxStep", jobRepository)
                 .<ContentOutbox, ContentOutbox>chunk(10, transactionManager)
-                .reader(contentOutboxReader())
-                .processor(contentOutboxProcessor(contentParam))
-                .writer(contentOutboxWriter())
+                .reader(contentOutboxReader)
+                .processor(contentOutboxProcessor)
+                .writer(contentOutboxWriter)
                 .build();
-    }
-
-
-    @Bean
-    @StepScope
-    public ItemReader<ContentOutbox> contentOutboxReader() {
-        List<ContentOutbox> items = contentOutboxRepository.findByStatus(MessageStatus.FAIL);
-        return new ListItemReader<>(items);
-    }
-
-
-    @Bean
-    @StepScope
-    public ItemProcessor<ContentOutbox, ContentOutbox> contentOutboxProcessor(
-            @Value("#{jobParameters['param']}") String param
-    ) {
-        return item -> {
-            // 파라미터를 사용하여 추가적인 로직을 구현할 수 있습니다.
-            item.changeStatus(MessageStatus.PROCESSED);
-            item.changeProcessedAt(LocalDateTime.now());
-            return item;
-        };
-    }
-
-
-    @Bean
-    @StepScope
-    public ItemWriter<ContentOutbox> contentOutboxWriter() {
-        return items -> items.forEach(item -> log.info("Processed content outbox item: {}", item));
     }
 
 }

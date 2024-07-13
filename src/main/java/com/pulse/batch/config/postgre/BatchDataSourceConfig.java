@@ -42,7 +42,6 @@ public class BatchDataSourceConfig {
             @Qualifier("batchDataSource") DataSource dataSource
     ) {
         Map<String, String> properties = new HashMap<>();
-        properties.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
         properties.put("hibernate.hbm2ddl.auto", "none");
 
         return builder
