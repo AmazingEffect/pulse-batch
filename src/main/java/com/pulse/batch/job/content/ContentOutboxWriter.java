@@ -1,13 +1,13 @@
 package com.pulse.batch.job.content;
 
 import com.pulse.batch.entity.content.ContentOutbox;
+import com.pulse.batch.kafka.KafkaProducerService;
 import com.pulse.batch.repository.content.ContentOutboxRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.Chunk;
 import org.springframework.batch.item.ItemWriter;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 /**
@@ -21,16 +21,21 @@ import org.springframework.stereotype.Component;
 @Component
 public class ContentOutboxWriter implements ItemWriter<ContentOutbox> {
 
-    private final KafkaTemplate<String, Object> kafkaTemplate;
+    private final KafkaProducerService kafkaProducerService;
     private final ContentOutboxRepository contentOutboxRepository;
 
+    /**
+     * JPA만 사용할 것이라면 JpaItemWriter를 사용하겠지만 JPA와 Kafka를 함께 사용하기 때문에 ItemWriter를 직접 구현합니다.
+     *
+     * @param chunk : Chunk는 ItemReader로부터 읽어온 데이터를 가지고 있습니다.
+     */
     @Override
-    public void write(Chunk<? extends ContentOutbox> chunk) throws Exception {
+    public void write(Chunk<? extends ContentOutbox> chunk) {
         log.info("Content ItemWriter 동작");
 
         for (ContentOutbox item : chunk.getItems()) {
             // Kafka 메시지 전송 (재발행 토픽)
-            kafkaTemplate.send("content-topic", item);
+            kafkaProducerService.sendWithRetry("content-re-issue", String.valueOf(item.getId()));
             log.info("Produced content outbox item: {}", item);
         }
 
