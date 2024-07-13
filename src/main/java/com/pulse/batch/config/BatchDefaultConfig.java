@@ -6,6 +6,7 @@ import org.springframework.batch.core.repository.support.JobRepositoryFactoryBea
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.lang.NonNull;
 import org.springframework.transaction.PlatformTransactionManager;
 
@@ -28,11 +29,13 @@ public class BatchDefaultConfig extends DefaultBatchConfiguration {
         this.batchTransactionManager = batchTransactionManager;
     }
 
+
     @Override
     @NonNull
     protected DataSource getDataSource() {
         return batchDataSource;
     }
+
 
     @Override
     @Bean
@@ -50,6 +53,7 @@ public class BatchDefaultConfig extends DefaultBatchConfiguration {
             throw new RuntimeException("Could not create JobRepository", e);
         }
     }
+
 
     @Bean
     @NonNull
