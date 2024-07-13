@@ -12,6 +12,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+/**
+ * MemberOutbox 항목을 읽어오는 클래스. (데이터를 읽어오는 역할을 합니다.)
+ */
 @Slf4j
 @RequiredArgsConstructor
 @StepScope
@@ -28,6 +31,7 @@ public class MemberOutboxReader implements ItemReader<MemberOutbox> {
         log.info("Member ItemReader 동작!");
 
         if (items == null) {
+            // 실패 상태의 항목들을 읽어옴
             items = memberOutboxRepository.findByStatus(MessageStatus.FAIL);
             nextItemIndex = 0;
         }

@@ -16,6 +16,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * ContentOutbox 배치 작업을 구성하는 클래스입니다.
+ * 이 클래스는 배치 Job과 Step을 정의하고 구성합니다.
+ */
 @Slf4j
 @RequiredArgsConstructor
 @EnableBatchProcessing
@@ -26,6 +30,13 @@ public class ContentOutboxJobConfig {
     private final ContentOutboxProcessor contentOutboxProcessor;
     private final ContentOutboxWriter contentOutboxWriter;
 
+    /**
+     * ContentOutbox 처리를 위한 Job을 정의합니다.
+     *
+     * @param jobRepository            JobRepository
+     * @param processContentOutboxStep ContentOutbox를 처리하는 Step
+     * @return Job
+     */
     @Bean
     public Job processContentOutboxJob(
             JobRepository jobRepository,
@@ -38,11 +49,12 @@ public class ContentOutboxJobConfig {
 
 
     /**
-     * JobScope 어노테이션은 주로 Step을 구성하는 데 사용됩니다.
+     * ContentOutbox 처리를 위한 Step을 정의합니다. (JobScope 어노테이션은 주로 Step을 구성하는 데 사용됩니다.)
+     * 이 Step은 ItemReader, ItemProcessor, ItemWriter로 구성됩니다.
      *
      * @param jobRepository      JobRepository
-     * @param transactionManager PlatformTransactionManager
-     * @param contentParam       contentParam
+     * @param transactionManager 콘텐츠 트랜잭션 매니저
+     * @param contentParam       contentParam (Job Parameter)
      * @return Step
      */
     @Transactional

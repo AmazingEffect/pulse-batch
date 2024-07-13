@@ -11,6 +11,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+/**
+ * SocialGraphOutbox 항목을 읽어오는 클래스.
+ */
 @Slf4j
 @RequiredArgsConstructor
 @StepScope
@@ -27,6 +30,7 @@ public class SocialGraphOutboxReader implements ItemReader<SocialGraphOutbox> {
         log.info("Social ItemReader 동작!");
 
         if (items == null) {
+            // 실패 상태의 항목들을 읽어옴
             items = socialGraphOutboxRepository.findByStatus(MessageStatus.FAIL);
             nextItemIndex = 0;
         }
