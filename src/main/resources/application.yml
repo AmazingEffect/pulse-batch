@@ -51,6 +51,6 @@ spring:
   kafka:
     consumer:
       bootstrap-servers: localhost:10000,localhost:10001,localhost:10002
-      group-id: social-graph-group
+      group-id: re-issue-batch-group
     producer:
       bootstrap-servers: localhost:10000,localhost:10001,localhost:10002
